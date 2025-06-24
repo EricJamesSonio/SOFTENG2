@@ -7,7 +7,7 @@ require_once(__DIR__ . '/../scripts/function.php');
 
 // Subcategory Table (Espresso, Egg, Tea, etc.)
 createTable($con, 'subcategory', "
-    CREATE TABLE IF NOT EXISTS subcategory (
+    CREATE TABLE subcategory (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
         category_id INT NOT NULL,

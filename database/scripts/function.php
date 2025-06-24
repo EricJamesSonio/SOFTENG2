@@ -76,23 +76,22 @@ function createTable($con, $name, $sql) {
 
 function insertData($con, $table, $columns, $values) {
     $cols = implode(',', $columns);
-    $placeholders = rtrim(str_repeat('?,', count($values[0])), ',');
-    $checkCol = $columns[0]; // assume first column is unique (e.g., 'name')
+    $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
 
     $inserted = 0;
     foreach ($values as $row) {
-        // Initialize $count
-        $count = 0;
+        $whereClause = implode(' AND ', array_map(fn($col) => "$col = ?", $columns));
+        $checkSql = "SELECT COUNT(*) FROM $table WHERE $whereClause";
 
-        // Check if entry already exists
-        $checkStmt = $con->prepare("SELECT COUNT(*) FROM $table WHERE $checkCol = ?");
-        $checkStmt->bind_param('s', $row[0]);
+        $checkStmt = $con->prepare($checkSql);
+        $checkStmt->bind_param(str_repeat('s', count($row)), ...$row);
         $checkStmt->execute();
+
+        $count = 0;
         $checkStmt->bind_result($count);
         $checkStmt->fetch();
         $checkStmt->close();
 
-        // Insert only if not exists
         if ($count == 0) {
             $stmt = $con->prepare("INSERT INTO $table ($cols) VALUES ($placeholders)");
             $stmt->bind_param(str_repeat('s', count($row)), ...$row);
@@ -104,5 +103,7 @@ function insertData($con, $table, $columns, $values) {
 
     echo "Inserted $inserted new rows into '$table'.<br>";
 }
+
+
 
 ?>

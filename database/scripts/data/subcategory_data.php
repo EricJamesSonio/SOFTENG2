@@ -14,5 +14,5 @@ insertData($con, 'subcategory', ['category_id', 'name'], [
     [$sandwichId, 'Egg'],
     [$sandwichId, 'Bacon'],
     [$sandwichId, 'Cheddar']
-]);
+],);
 ?>
