@@ -27,6 +27,9 @@ function createTable($con, $name, $sql) {
                     $line === '' ||
                     stripos($line, 'PRIMARY KEY') !== false ||
                     stripos($line, 'FOREIGN KEY') !== false ||
+                    stripos($line, 'UNIQUE') !== false ||
+                    stripos($line, 'KEY') === 0 ||
+                    stripos($line, 'CONSTRAINT') === 0 ||
                     stripos($line, 'CREATE TABLE') !== false ||
                     $line[0] === ')'
                 ) {

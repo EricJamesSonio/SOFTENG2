@@ -9,7 +9,9 @@ createTable($con, 'suppliers', "
         name VARCHAR(100) NOT NULL,
         contact_no VARCHAR(20) NOT NULL,
         email VARCHAR(100) NOT NULL,
-        info TEXT
+        info TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
 ");
 

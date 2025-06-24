@@ -13,6 +13,8 @@ createTable($con, 'starbucksitem', "
         category_id INT NOT NULL,
         subcategory_id INT NOT NULL,
         description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (category_id) REFERENCES category(id),
         FOREIGN KEY (subcategory_id) REFERENCES subcategory(id)
     )
