@@ -4,6 +4,9 @@ $USERNAME = 'root';
 $PASSWORD = ''; 
 $DATABASE = 'softeng';
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+
 $con = mysqli_connect($HOSTNAME, $USERNAME, $PASSWORD, $DATABASE);
 
 if ($con) {
