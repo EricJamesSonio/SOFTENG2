@@ -226,4 +226,74 @@ function getIdByFullName($con, $table, $first, $last) {
 
     return null;
 }
+
+function insertDataAndGetId($con, $table, $columns, $values, $uniqueColumns = null) {
+    $cols = implode(',', $columns);
+    $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
+
+    foreach ($values as $row) {
+        // Determine param types
+        $types = implode('', array_map(function ($val) {
+            if (is_int($val)) return 'i';
+            if (is_float($val) || is_double($val)) return 'd';
+            return 's';
+        }, $row));
+
+        // Prepare for duplicate checking
+        $check = $row;
+        $checkCols = $columns;
+
+        if ($uniqueColumns) {
+            $check = [];
+            $checkCols = [];
+
+            foreach ($uniqueColumns as $uc) {
+                $index = array_search($uc, $columns);
+                if ($index !== false) {
+                    $check[] = $row[$index];
+                    $checkCols[] = $uc;
+                }
+            }
+
+            // If none of the unique columns were found, skip and use all
+            if (empty($check)) {
+                $checkCols = $columns;
+                $check = $row;
+            }
+        }
+
+        // Build WHERE clause for checking
+        $checkTypes = implode('', array_map(function ($val) {
+            if (is_int($val)) return 'i';
+            if (is_float($val) || is_double($val)) return 'd';
+            return 's';
+        }, $check));
+
+        $whereClause = implode(' AND ', array_map(fn($col) => "$col = ?", $checkCols));
+        $checkSql = "SELECT id FROM `$table` WHERE $whereClause";
+
+        $checkStmt = $con->prepare($checkSql);
+        $checkStmt->bind_param($checkTypes, ...$check);
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
+
+        if ($checkResult && $rowData = $checkResult->fetch_assoc()) {
+            $checkStmt->close();
+            return $rowData['id']; // 🔁 Already exists, return existing ID
+        }
+        $checkStmt->close();
+
+        // Proceed with INSERT if not found
+        $stmt = $con->prepare("INSERT INTO `$table` ($cols) VALUES ($placeholders)");
+        $stmt->bind_param($types, ...$row);
+        $stmt->execute();
+        $insertId = $stmt->insert_id;
+        $stmt->close();
+
+        return $insertId; // ✅ Inserted, return new ID
+    }
+
+    return null; // If no rows
+}
+
 ?>

@@ -2,7 +2,7 @@
 require_once(__DIR__ . '/../function.php');
 
 $userId = getIdByFullName($con, 'user', 'Juan', 'Cruz');
-$adminId = getIdByFullName($con, 'admin', 'Maria', 'Santos');
+$adminId = getIdByFullName($con, 'admin', 'Eric James', 'Sonio');
 
 insertData(
     $con,

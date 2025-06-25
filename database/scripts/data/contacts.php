@@ -36,5 +36,6 @@ if ($adminId) {
 // Insert all
 insertData($con, 'contact',
     ['contactable_type', 'contactable_id', 'contact_type', 'value'],
-    $contacts
+    $contacts,
+    ['contactable_type', 'contactable_id', 'contact_type'] // <- add this line to avoid duplicates
 );

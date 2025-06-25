@@ -10,13 +10,15 @@ createTable($con, 'item_attribute', "
     CREATE TABLE item_attribute (
         id INT AUTO_INCREMENT PRIMARY KEY,
         item_id INT NOT NULL,
-        attribute_name VARCHAR(50) NOT NULL,
+        attribute_template_id INT NOT NULL,
         attribute_value VARCHAR(30) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
     )
 ");
+
 
 
 ?>
