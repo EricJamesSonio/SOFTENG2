@@ -27,9 +27,7 @@ function createTable($con, $name, $sql) {
                     $line === '' ||
                     stripos($line, 'PRIMARY KEY') !== false ||
                     stripos($line, 'FOREIGN KEY') !== false ||
-                    stripos($line, 'UNIQUE') !== false ||
-                    stripos($line, 'KEY') === 0 ||
-                    stripos($line, 'CONSTRAINT') === 0 ||
+                    preg_match('/^UNIQUE|^KEY|^CONSTRAINT/i', $line) ||
                     stripos($line, 'CREATE TABLE') !== false ||
                     $line[0] === ')'
                 ) {
@@ -82,12 +80,21 @@ function insertData($con, $table, $columns, $values) {
     $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
 
     $inserted = 0;
+
     foreach ($values as $row) {
+        // Determine param types based on value types
+        $types = implode('', array_map(function ($val) {
+            if (is_int($val)) return 'i';
+            if (is_float($val) || is_double($val)) return 'd';
+            return 's'; // Default to string
+        }, $row));
+
+        // Build WHERE clause
         $whereClause = implode(' AND ', array_map(fn($col) => "$col = ?", $columns));
         $checkSql = "SELECT COUNT(*) FROM $table WHERE $whereClause";
 
         $checkStmt = $con->prepare($checkSql);
-        $checkStmt->bind_param(str_repeat('s', count($row)), ...$row);
+        $checkStmt->bind_param($types, ...$row);
         $checkStmt->execute();
 
         $count = 0;
@@ -97,7 +104,7 @@ function insertData($con, $table, $columns, $values) {
 
         if ($count == 0) {
             $stmt = $con->prepare("INSERT INTO $table ($cols) VALUES ($placeholders)");
-            $stmt->bind_param(str_repeat('s', count($row)), ...$row);
+            $stmt->bind_param($types, ...$row);
             $stmt->execute();
             $stmt->close();
             $inserted++;
@@ -108,5 +115,71 @@ function insertData($con, $table, $columns, $values) {
 }
 
 
+//Function that can be use for Updating or changing the pre defined items by using its key 
+function upsertData($con, $table, $columns, $values, $keys) {
+    $cols = implode(',', $columns);
+    $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
+
+    $updated = 0;
+    $inserted = 0;
+
+    foreach ($values as $row) {
+        $keyClause = implode(' AND ', array_map(fn($k) => "$k = ?", $keys));
+        $keyValues = [];
+        foreach ($keys as $k) {
+            $index = array_search($k, $columns);
+            $keyValues[] = $row[$index];
+        }
+
+        $checkSql = "SELECT COUNT(*) FROM $table WHERE $keyClause";
+        $checkStmt = $con->prepare($checkSql);
+        $checkStmt->bind_param(str_repeat('s', count($keys)), ...$keyValues);
+        $checkStmt->execute();
+
+        $count = 0;
+        $checkStmt->bind_result($count);
+        $checkStmt->fetch();
+        $checkStmt->close();
+
+        if ((int)$count > 0) {
+            // UPDATE
+            $setClause = implode(', ', array_map(fn($col) => "$col = ?", $columns));
+            $sql = "UPDATE $table SET $setClause WHERE $keyClause";
+
+            $stmt = $con->prepare($sql);
+            $stmt->bind_param(str_repeat('s', count($row) + count($keyValues)), ...$row, ...$keyValues);
+            $stmt->execute();
+            $stmt->close();
+            $updated++;
+        } else {
+            // INSERT
+            $stmt = $con->prepare("INSERT INTO $table ($cols) VALUES ($placeholders)");
+            $stmt->bind_param(str_repeat('s', count($row)), ...$row);
+            $stmt->execute();
+            $stmt->close();
+            $inserted++;
+        }
+    }
+
+    echo "Upserted into '$table': $inserted inserted, $updated updated.<br>";
+}
+
+// Reusable helper to get the ID of a Starbucks item by name
+function getIdByName($con, $table, $name) {
+    $stmt = $con->prepare("SELECT id FROM `$table` WHERE name = ?");
+    $stmt->bind_param("s", $name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if (!$result || $result->num_rows === 0) {
+        echo "❌ '$name' not found in '$table' table.<br>";
+        return null;
+    }
+
+    $row = $result->fetch_assoc();
+    $stmt->close();
+
+    return $row['id'];
+}
 
 ?>

@@ -11,7 +11,7 @@ createTable($con, 'item_attributes', "
         id INT AUTO_INCREMENT PRIMARY KEY,
         item_id INT NOT NULL,
         attribute_name VARCHAR(50) NOT NULL,
-        attribute_value VARCHAR(100) NOT NULL,
+        attribute_value VARCHAR(30) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE

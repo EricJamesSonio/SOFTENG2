@@ -11,11 +11,19 @@ require_once(__DIR__ . '/model/itemattributes.php');
 require_once(__DIR__ . '/model/supplier.php');
 require_once(__DIR__ . '/model/ingredients.php');
 require_once(__DIR__ . '/model/supplier_contacts.php');
+require_once(__DIR__ . '/model/item_ingredients.php');
+
 
 // Data population
 require_once(__DIR__ . '/scripts/data/category_data.php');
 require_once(__DIR__ . '/scripts/data/subcategory_data.php');
 require_once(__DIR__ . '/scripts/data/attributes_templates_data.php');
+require_once(__DIR__ . '/scripts/data/starbucksitem.php');
+require_once(__DIR__ . '/scripts/data/item_attributes_data.php');
+require_once(__DIR__ . '/scripts/data/ingredients.php');
+require_once(__DIR__ . '/scripts/data/item_ingredients.php');
+require_once(__DIR__ . '/scripts/data/suppliers.php');
+require_once(__DIR__ . '/scripts/data/supplier_contacts.php');
 
 echo "✅ All tables created successfully.";
 ?>
