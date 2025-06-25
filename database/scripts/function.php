@@ -27,12 +27,16 @@ function createTable($con, $name, $sql) {
                     $line === '' ||
                     stripos($line, 'PRIMARY KEY') !== false ||
                     stripos($line, 'FOREIGN KEY') !== false ||
-                    preg_match('/^UNIQUE|^KEY|^CONSTRAINT/i', $line) ||
-                    stripos($line, 'CREATE TABLE') !== false ||
+                    stripos($line, 'UNIQUE') === 0 ||
+                    stripos($line, 'KEY') === 0 ||
+                    stripos($line, 'INDEX') === 0 ||
+                    stripos($line, 'CONSTRAINT') === 0 ||
+                    stripos($line, 'CREATE TABLE') === 0 ||
                     $line[0] === ')'
-                ) {
-                    continue;
-                }
+                    ) {
+                        continue;
+                    }
+
 
                 $parts = preg_split('/\s+/', $line, 2);
                 if (count($parts) < 2) continue;
@@ -75,28 +79,55 @@ function createTable($con, $name, $sql) {
 
 
 
-function insertData($con, $table, $columns, $values) {
+function insertData($con, $table, $columns, $values, $uniqueColumns = null) {
     $cols = implode(',', $columns);
     $placeholders = rtrim(str_repeat('?,', count($columns)), ',');
 
     $inserted = 0;
 
     foreach ($values as $row) {
-        // Determine param types based on value types
+        // Determine param types
         $types = implode('', array_map(function ($val) {
             if (is_int($val)) return 'i';
             if (is_float($val) || is_double($val)) return 'd';
-            return 's'; // Default to string
+            return 's';
         }, $row));
 
-        // Build WHERE clause
-        $whereClause = implode(' AND ', array_map(fn($col) => "$col = ?", $columns));
+        // If uniqueColumns are specified, use them to check for duplicates
+        $check = $row;
+        $checkCols = $columns;
+
+        if ($uniqueColumns) {
+            $check = [];
+            $checkCols = [];
+
+            foreach ($uniqueColumns as $uc) {
+                $index = array_search($uc, $columns);
+                if ($index !== false) {
+                    $check[] = $row[$index];
+                    $checkCols[] = $uc;
+                }
+            }
+
+            // If none of the unique columns were found, skip check
+            if (empty($check)) {
+                $checkCols = $columns;
+                $check = $row;
+            }
+        }
+
+        $checkTypes = implode('', array_map(function ($val) {
+            if (is_int($val)) return 'i';
+            if (is_float($val) || is_double($val)) return 'd';
+            return 's';
+        }, $check));
+
+        $whereClause = implode(' AND ', array_map(fn($col) => "$col = ?", $checkCols));
         $checkSql = "SELECT COUNT(*) FROM $table WHERE $whereClause";
 
         $checkStmt = $con->prepare($checkSql);
-        $checkStmt->bind_param($types, ...$row);
+        $checkStmt->bind_param($checkTypes, ...$check);
         $checkStmt->execute();
-
         $count = 0;
         $checkStmt->bind_result($count);
         $checkStmt->fetch();
@@ -182,4 +213,17 @@ function getIdByName($con, $table, $name) {
     return $row['id'];
 }
 
+// Get ID by full name from a table
+function getIdByFullName($con, $table, $first, $last) {
+    $stmt = $con->prepare("SELECT id FROM `$table` WHERE first_name = ? AND last_name = ?");
+    $stmt->bind_param("ss", $first, $last);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $row = $result->fetch_assoc()) {
+        return $row['id'];
+    }
+
+    return null;
+}
 ?>

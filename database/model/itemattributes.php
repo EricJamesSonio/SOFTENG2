@@ -6,8 +6,8 @@ require_once(__DIR__ . '/../scripts/function.php');
 
 
 // Flexible Attributes Table (caffeine_level, cook_level, etc.)
-createTable($con, 'item_attributes', "
-    CREATE TABLE item_attributes (
+createTable($con, 'item_attribute', "
+    CREATE TABLE item_attribute (
         id INT AUTO_INCREMENT PRIMARY KEY,
         item_id INT NOT NULL,
         attribute_name VARCHAR(50) NOT NULL,

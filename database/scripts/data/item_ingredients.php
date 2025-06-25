@@ -41,12 +41,12 @@ foreach ($map as $itemName => $ingredients) {
     if (!$itemId) continue;
 
     foreach ($ingredients as [$ingredientName, $qty]) {
-        $ingredientId = getIdByName($con, 'ingredients', $ingredientName);
+        $ingredientId = getIdByName($con, 'ingredient', $ingredientName);
         if (!$ingredientId) continue;
 
         $values[] = [$itemId, $ingredientId, $qty];
     }
 }
 
-insertData($con, 'item_ingredients', ['item_id', 'ingredient_id', 'quantity'], $values);
+insertData($con, 'item_ingredient', ['item_id', 'ingredient_id', 'quantity'], $values);
 ?>

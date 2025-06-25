@@ -10,8 +10,12 @@ require_once(__DIR__ . '/model/attributes_templates.php');
 require_once(__DIR__ . '/model/itemattributes.php'); 
 require_once(__DIR__ . '/model/supplier.php');
 require_once(__DIR__ . '/model/ingredients.php');
-require_once(__DIR__ . '/model/supplier_contacts.php');
+require_once(__DIR__ . '/model/contacts.php');
 require_once(__DIR__ . '/model/item_ingredients.php');
+require_once(__DIR__ . '/model/admins.php');
+require_once(__DIR__ . '/model/auth.php');
+require_once(__DIR__ . '/model/users.php');
+require_once(__DIR__ . '/model/address.php');
 
 
 // Data population
@@ -23,7 +27,13 @@ require_once(__DIR__ . '/scripts/data/item_attributes_data.php');
 require_once(__DIR__ . '/scripts/data/ingredients.php');
 require_once(__DIR__ . '/scripts/data/item_ingredients.php');
 require_once(__DIR__ . '/scripts/data/suppliers.php');
-require_once(__DIR__ . '/scripts/data/supplier_contacts.php');
+require_once(__DIR__ . '/scripts/data/contacts.php');
+require_once(__DIR__ . '/scripts/data/users.php');
+require_once(__DIR__ . '/scripts/data/admins.php');
+require_once(__DIR__ . '/scripts/data/contacts.php');
+require_once(__DIR__ . '/scripts/data/auth.php');
+require_once(__DIR__ . '/scripts/data/address.php');
+
 
 echo "✅ All tables created successfully.";
 ?>

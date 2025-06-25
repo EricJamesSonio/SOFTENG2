@@ -23,6 +23,6 @@ foreach ($itemIds as $itemId) {
 }
 
 // Step 3: Insert into item_attributes
-insertData($con, 'item_attributes', ['item_id', 'attribute_name', 'attribute_value'], $attributeRows);
+insertData($con, 'item_attribute', ['item_id', 'attribute_name', 'attribute_value'], $attributeRows);
 
 ?>
