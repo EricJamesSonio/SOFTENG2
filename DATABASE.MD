@@ -9,6 +9,7 @@
     subcategory             --> Drinks = Expresso
     supplier_contacts       --> Email, Phone
     supplier                --> Base Details of Ingredient Suppliers
+[new] item_ingredients      --> starbucksitem and ingredient relation table
 
 StarbucksItem -->
         id INT AUTO_INCREMENT PRIMARY KEY,
