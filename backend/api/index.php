@@ -1,29 +1,20 @@
 <?php
-require_once 'database/db.php';
+require_once dirname(__DIR__, 2) . '/database/db.php';
+
 
 $request = $_SERVER['REQUEST_URI'];
-$request = strtok($request, '?'); 
+$uri = parse_url($request, PHP_URL_PATH);
+$uri = explode('/', $uri);
 
-switch (true) {
-    case str_starts_with($request, '/items'):
-        require 'routes/items.php';
-        break;
+$route = isset($uri[2]) ? $uri[2] : '';
 
-    case str_starts_with($request, '/suppliers'):
-        require 'routes/suppliers.php';
-        break;
-
-    case str_starts_with($request, '/ingredients'):
-        require 'routes/ingredients.php';
-        break;
-
-    case str_starts_with($request, '/orders'):
-        require 'routes/orders.php';
+switch ($route) {
+    case 'items':
+        require __DIR__ . '/routes/item.php';
         break;
 
     default:
         http_response_code(404);
-        echo json_encode(['error' => 'Route not found']);
+        echo json_encode(["message" => "Route not found"]);
+        break;
 }
-
-?>

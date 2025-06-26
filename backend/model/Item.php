@@ -1,34 +1,24 @@
 <?php
+require_once dirname(__DIR__, 2) . '/database/db.php';
+
+
 class Item {
-    
-    public static function getAll() {
-        global $conn; // This $conn is from db.php and tis global , by using this we can freely access the database 
-        $sql = "SELECT * FROM starbucksitems";  // selecting all items in starbucksitem using sql commands SELECT * FROM
-        $result = $conn->query($sql); // Process the SELECT * FROM by calling the database ($conn) commmand query
+    private $conn;
 
-        if (!$result) {
-            return [];  // if result is faild return error
-        }
-
-        return $result->fetch_all(MYSQLI_ASSOC); // else, convert the SELECT * FROM into a php array like this ['id' => 1, 'name' => 'Espresso', 'price' => 120],
+    public function __construct($con) {
+        $this->conn = $con;
     }
 
-    public static function insert($name, $price, $category_id, $subcategory_id, $description = null) {
-    global $conn;
+    public function getAllItems() {
+        $sql = "SELECT * FROM starbucksitem";
+        $result = $this->conn->query($sql);
 
-    $stmt = $conn->prepare("
-        INSERT INTO starbucksitem (name, price, category_id, subcategory_id, description)
-        VALUES (?, ?, ?, ?, ?)
-    ");
-    
-    $stmt->bind_param("sdiis", $name, $price, $category_id, $subcategory_id, $description);
-    
-    return $stmt->execute();
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+
+        return $items;
+    }
 }
-
-}
-
 ?>
-
-// getAll --> Gets all the function
-// insert --> Insert starbucksitem

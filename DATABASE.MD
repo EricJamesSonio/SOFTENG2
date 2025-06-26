@@ -67,13 +67,6 @@ Ingredient -->
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE
 
-Supplier -->
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        info TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
 Item Ingredient -->
         id               INT AUTO_INCREMENT PRIMARY KEY,
         item_id          INT NOT NULL,
@@ -86,6 +79,13 @@ Item Ingredient -->
         FOREIGN KEY (item_id)       REFERENCES starbucksitem(id)   ON DELETE CASCADE,
         FOREIGN KEY (ingredient_id) REFERENCES ingredient(id)      ON DELETE CASCADE,
         UNIQUE (item_id, ingredient_id)
+
+Supplier -->
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        info TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
 Admin -->
         id INT AUTO_INCREMENT PRIMARY KEY,
