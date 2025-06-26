@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../model/item.php';
+require_once dirname(__DIR__, 2) . '/model/item.php';
 
 function getItems($con) {
     $itemModel = new Item($con);

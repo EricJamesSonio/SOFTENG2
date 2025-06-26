@@ -9,9 +9,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $con = mysqli_connect($HOSTNAME, $USERNAME, $PASSWORD, $DATABASE);
 
-if ($con) {
-    echo "Database connected successfully";
-} else {
-    die("Connection failed: " . mysqli_connect_error());
+if (!$con) {
+    die(json_encode(['error' => 'Database connection failed', 'details' => mysqli_connect_error()]));
 }
-?>
+

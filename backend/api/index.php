@@ -1,16 +1,20 @@
 <?php
 require_once dirname(__DIR__, 2) . '/database/db.php';
 
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
+// Get and parse the request path
 $request = $_SERVER['REQUEST_URI'];
 $uri = parse_url($request, PHP_URL_PATH);
-$uri = explode('/', $uri);
+$uri = explode('/', trim($uri, '/'));
 
-$route = isset($uri[2]) ? $uri[2] : '';
+// Example: ["SOFTENG", "backend", "api", "index.php", "items"]
+$route = isset($uri[4]) ? $uri[4] : '';
 
 switch ($route) {
     case 'items':
-        require __DIR__ . '/routes/item.php';
+        require __DIR__ . '/routes/items.php';
         break;
 
     default:

@@ -1,31 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Test Get All Items</title>
+  <meta charset="UTF-8">
+  <title>Item List</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    button {
+      background-color: #006341;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004f33;
+    }
+
+    .item-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .item-card {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .item-card:hover {
+      transform: scale(1.02);
+    }
+
+    .item-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .item-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .item-price {
+      font-weight: bold;
+      color: #006341;
+    }
+  </style>
 </head>
 <body>
-    <h2>Test: Fetch All Starbucks Items</h2>
-    <button onclick="fetchItems()">Get Items</button>
+  <div class="container">
+    <h1>Starbucks Item List</h1>
+    <button onclick="fetchItems()">Load Items</button>
+    <div class="item-list" id="itemList"></div>
+  </div>
 
-    <pre id="output"></pre>
+  <script>
+    function fetchItems() {
+      fetch('http://localhost/SOFTENG/backend/api/index.php/items')
+        .then(res => res.json())
+        .then(data => {
+          const itemList = document.getElementById('itemList');
+          itemList.innerHTML = ''; // Clear previous results
 
-    <script>
-        function fetchItems() {
-            fetch('http://localhost/softeng/backend/api/index.php/items')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    document.getElementById('output').textContent = 'Error: ' + error;
-                });
-        }
-    </script>
+          data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            card.innerHTML = `
+              <div class="item-name">${item.name}</div>
+              <div class="item-description">${item.description}</div>
+              <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
+              <div>Quantity: ${item.quantity}</div>
+            `;
+
+            itemList.appendChild(card);
+          });
+        })
+        .catch(error => {
+          document.getElementById('itemList').innerHTML = `<p style="color: red;">Error: ${error}</p>`;
+        });
+    }
+  </script>
 </body>
 </html>
