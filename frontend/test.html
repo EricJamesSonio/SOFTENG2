@@ -25,6 +25,7 @@
             card.className = 'item-card';
 
             card.innerHTML = `
+              <img src="images/${item.image_url || 'default.jpg'}" alt="${item.name}" class="item-img">
               <div class="item-name">${item.name}</div>
               <div class="item-description">${item.description}</div>
               <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>

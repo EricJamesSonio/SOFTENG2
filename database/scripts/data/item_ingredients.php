@@ -34,6 +34,10 @@ $map = [
         ['Cheddar Cheese', 60, 'g'],
         ['Croissant Bun', 1, 'piece'],
     ],
+    'Ice Starbucks Purple Cream' => [
+        ['Espresso Shot', 30, 'ml'],
+        ['Steamed Milk', 150, 'ml'],
+    ],
 ];
 
 $values = [];
