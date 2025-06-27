@@ -1,4 +1,13 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// … the rest of your code …
+
+//ini_set('display_errors', 0); // or 1 if you want to debug
+//ini_set('html_errors', 0);    // ❗ important: prevents HTML in error
+
+
 require_once dirname(__DIR__, 2) . '/database/db.php';
 
 header("Access-Control-Allow-Origin: *");
@@ -16,6 +25,23 @@ switch ($route) {
     case 'items':
         require __DIR__ . '/routes/items.php';
         break;
+
+    case 'checkout':
+        require __DIR__ . '/routes/checkout.php';
+        break;
+
+    case 'payment':
+        require __DIR__ . '/routes/payment.php';
+        break;
+
+    case 'receipt':
+        require __DIR__ . '/routes/receipt.php';
+        break;
+
+    case 'sizes':                  
+        require __DIR__ . '/routes/sizes.php';
+        break;
+
 
     default:
         http_response_code(404);

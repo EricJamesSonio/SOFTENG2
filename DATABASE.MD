@@ -202,4 +202,11 @@ getIDbyName     --> Get id from different tables by name (Used for creating tabl
 [Address] -- Location
         [User], [Admin]
 
+---------------------------------------------------------------------------------
+
+[item attributes]
+
+--> [attribute templates] 
+        --> cafeine level etc. default to medium
+
 
