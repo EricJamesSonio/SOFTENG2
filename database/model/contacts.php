@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../scripts/function.php');
 createTable($con, 'contact', "
     CREATE TABLE contact (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        contactable_type ENUM('supplier', 'user', 'admin') NOT NULL,
+        contactable_type ENUM( 'user', 'admin') NOT NULL,
         contactable_id INT NOT NULL,
         contact_type ENUM('email', 'phone') NOT NULL,
         value VARCHAR(100) NOT NULL,

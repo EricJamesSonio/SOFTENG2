@@ -7,7 +7,7 @@ require_once(__DIR__ . '/../scripts/function.php');
 createTable($con, 'address', "
     CREATE TABLE address (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        addressable_type ENUM('user', 'supplier', 'admin') NOT NULL,
+        addressable_type ENUM('user','admin') NOT NULL,
         addressable_id INT NOT NULL,
         street VARCHAR(255),
         city VARCHAR(100),

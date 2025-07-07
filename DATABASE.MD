@@ -3,17 +3,15 @@
 [model]         --> contains Table for DATABASE
     attributes_template     --> Coffeine level etc.
     category                --> Drinks, Sandwich etc.
-    ingredients             --> Used in starbucksitems
     itemattributes          --> Contains Attribute templates and starcbucksitem linked
     starbucksitem           --> Base Item
     subcategory             --> Drinks = Expresso
     supplier_contacts       --> Email, Phone
     supplier                --> Base Details of Ingredient Suppliers
-    item_ingredients        --> starbucksitem and ingredient relation table
     user                    --> User of website "Customer"
     admin                   --> Manager
     auth                    --> Logins (user, admin)
-    address                 --> Location (user, supplier) for delivery & supply purposes
+    address                 --> Location (user, admin) for delivery & supply purposes
     userorder               --> Individual order itself contains price & quantity
     order_item              --> contains the userorders to combine all and can get the total price etc.
     receipt                 --> Contains receipt of the order (payment, change etc.)
@@ -59,27 +57,6 @@ Item Attributes -->
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
         FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
 
-Ingredient --> 
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL UNIQUE,
-        supplier_id INT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE
-
-Item Ingredient -->
-        id               INT AUTO_INCREMENT PRIMARY KEY,
-        item_id          INT NOT NULL,
-        ingredient_id    INT NOT NULL,
-        quantity_value   DECIMAL(10,4) NULL,
-        quantity_unit    VARCHAR(50)   NULL,
-        created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
-                          ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (item_id)       REFERENCES starbucksitem(id)   ON DELETE CASCADE,
-        FOREIGN KEY (ingredient_id) REFERENCES ingredient(id)      ON DELETE CASCADE,
-        UNIQUE (item_id, ingredient_id)
-
 Supplier -->
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -117,7 +94,7 @@ Auth -->
 
 Contact -->
         id INT AUTO_INCREMENT PRIMARY KEY,
-        contactable_type ENUM('supplier', 'user', 'admin') NOT NULL,
+        contactable_type ENUM( 'user', 'admin') NOT NULL,
         contactable_id INT NOT NULL,
         contact_type ENUM('email', 'phone') NOT NULL,
         value VARCHAR(100) NOT NULL,
@@ -127,7 +104,7 @@ Contact -->
 
 Address -->
         id INT AUTO_INCREMENT PRIMARY KEY,
-        addressable_type ENUM('user', 'supplier', 'admin') NOT NULL,
+        addressable_type ENUM('user','admin') NOT NULL,
         addressable_id INT NOT NULL,
         street VARCHAR(255),
         city VARCHAR(100),
