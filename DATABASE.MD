@@ -6,7 +6,7 @@
     itemattributes          --> Contains Attribute templates and starcbucksitem linked
     starbucksitem           --> Base Item
     subcategory             --> Drinks = Expresso
-    supplier_contacts       --> Email, Phone
+    contacts                --> Email, Phone
     supplier                --> Base Details of Ingredient Suppliers
     user                    --> User of website "Customer"
     admin                   --> Manager

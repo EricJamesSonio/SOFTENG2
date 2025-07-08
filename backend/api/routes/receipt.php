@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__, 2) . '/database/db.php';
+require_once dirname(__DIR__, 2) . '/database/db2.php';
 require_once dirname(__DIR__, 2) . '/vendor/tcpdf/tcpdf.php'; // adjust path if needed
 
 $orderId = $_GET['orderId'] ?? null;

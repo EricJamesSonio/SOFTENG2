@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . '/../db.php');
+require_once(__DIR__ . '/../db2.php');
 require_once(__DIR__ . '/../scripts/function.php');
 
 // Order Table

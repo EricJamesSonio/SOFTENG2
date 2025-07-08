@@ -1,17 +1,16 @@
-// ─── Step 2: Load size options from backend ──────────────────────────
+// ─── Step 1: Load size options from backend ──────────────────────────
 let sizes = [];
 
 function loadSizes() {
-  fetch('http://localhost/SOFTENG/backend/api/index.php/sizes')
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/sizes')
     .then(res => res.json())
     .then(data => {
-      sizes = data;  
+      sizes = data;
       console.log('Loaded sizes:', sizes);
     })
     .catch(err => console.error('Could not load sizes:', err));
 }
 
-// Call it immediately so sizes[] is populated before user opens modal
 loadSizes();
 
 let currentCategory = '';
@@ -23,16 +22,17 @@ function loadCategory(categoryName) {
   document.getElementById('categorySelect').style.display = 'none';
   document.getElementById('backButton').style.display = 'block';
 
-  fetch('http://localhost/SOFTENG/backend/api/index.php/items')
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/items')
     .then(res => res.json())
     .then(data => {
       const filtered = data.filter(item => {
-  return (categoryName === 'Drink' && item.category_id == 1) || 
-         (categoryName === 'Sandwich' && item.category_id == 2);
-});
+        return (categoryName === 'Drink' && item.category_id == 1) ||
+               (categoryName === 'Sandwich' && item.category_id == 2);
+      });
 
       displayItems(filtered);
-    });
+    })
+    .catch(err => console.error('Could not load items:', err));
 }
 
 function displayItems(items) {
@@ -62,27 +62,22 @@ function showCategories() {
 
 function openModal(item) {
   currentItem = item;
-
-  // 1️⃣ Set the item name
   document.getElementById('modalItemName').textContent = item.name;
   document.getElementById('modalQuantity').value = 1;
 
-  // 2️⃣ Populate the size dropdown from our `sizes[]` array
   const sizeSelect = document.getElementById('modalSize');
-  sizeSelect.innerHTML = '';                    // clear “Loading…”
+  sizeSelect.innerHTML = '';
+
   sizes.forEach(sz => {
     const opt = document.createElement('option');
     opt.value = sz.id;
-    // show name + surcharge
     opt.textContent = `${sz.name} (+₱${parseFloat(sz.price_modifier).toFixed(2)})`;
     opt.dataset.modifier = sz.price_modifier;
     sizeSelect.appendChild(opt);
   });
 
-  // 3️⃣ Show the modal
   document.getElementById('itemModal').style.display = 'flex';
 }
-
 
 function closeModal() {
   document.getElementById('itemModal').style.display = 'none';
@@ -93,15 +88,13 @@ function addToCart() {
   if (qty < 1) return;
 
   const sizeSelect = document.getElementById('modalSize');
-  const sizeId   = sizeSelect.value;
+  const sizeId = sizeSelect.value;
   const sizeText = sizeSelect.options[sizeSelect.selectedIndex].text;
-  const mod      = parseFloat(sizeSelect.options[sizeSelect.selectedIndex].dataset.modifier);
+  const mod = parseFloat(sizeSelect.options[sizeSelect.selectedIndex].dataset.modifier);
 
-  // Calculate final unit price
-  const basePrice    = parseFloat(currentItem.price);
-  const unitPrice    = basePrice + mod;
+  const basePrice = parseFloat(currentItem.price);
+  const unitPrice = basePrice + mod;
 
-  // Check if same item+size already in cart
   const existing = cart.find(i => i.id === currentItem.id && i.sizeId === sizeId);
   if (existing) {
     existing.quantity += qty;
@@ -119,7 +112,6 @@ function addToCart() {
   renderCart();
 }
 
-
 function renderCart() {
   const cartItems = document.getElementById('cartItems');
   cartItems.innerHTML = '';
@@ -127,23 +119,19 @@ function renderCart() {
   let total = 0;
 
   cart.forEach(item => {
-    // calculate line total using unitPrice (base + modifier)
     const lineTotal = item.quantity * item.unitPrice;
     total += lineTotal;
 
-    // show sizeText and unitPrice in the display
     const div = document.createElement('div');
-    div.textContent = 
+    div.textContent =
       `${item.name} (${item.sizeText}) x ${item.quantity} = ₱${lineTotal.toFixed(2)}`;
 
     cartItems.appendChild(div);
   });
 
-  // update totals in the sidebar
-  document.getElementById('cartTotal').textContent    = total.toFixed(2);
-  document.getElementById('cartDiscount').textContent = '0.00'; // future discount
+  document.getElementById('cartTotal').textContent = total.toFixed(2);
+  document.getElementById('cartDiscount').textContent = '0.00';
 }
-
 
 function checkout() {
   if (!cart.length) {
@@ -152,35 +140,32 @@ function checkout() {
 
   const payload = {
     items: cart.map(i => ({
-      item_id:    i.id,
-      size_id:    i.sizeId,
-      quantity:   i.quantity,
+      item_id: i.id,
+      size_id: i.sizeId,
+      quantity: i.quantity,
       unit_price: i.unitPrice
     })),
     discount: 0
   };
 
-  fetch('http://localhost/SOFTENG/backend/api/index.php/checkout', {
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/checkout', {
     method: 'POST',
-    headers: { 'Content-Type':'application/json' },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.message === "Checkout successful!") {
-      // calculate total using the same surcharged prices
-      const total = payload.items
-        .reduce((sum, it) => sum + it.unit_price * it.quantity, 0);
-      showPaymentModal(total);
-    } else {
-      alert(data.message || "Something went wrong.");
-    }
-  })
-  .catch(err => {
-    alert("Checkout failed: " + err);
-  });
+    .then(res => res.json())
+    .then(data => {
+      if (data.message === "Checkout successful!") {
+        const total = payload.items.reduce((sum, it) => sum + it.unit_price * it.quantity, 0);
+        showPaymentModal(total);
+      } else {
+        alert(data.message || "Something went wrong.");
+      }
+    })
+    .catch(err => {
+      alert("Checkout failed: " + err);
+    });
 }
-
 
 function showPaymentModal(total) {
   const discount = total * 0.10;
@@ -193,13 +178,13 @@ function showPaymentModal(total) {
   document.getElementById('cashInput').value = '';
   document.getElementById('paymentModal').style.display = 'flex';
 
-  // Save values for later use
   window.paymentData = { total, discount, final };
 }
 
 function closePaymentModal() {
   document.getElementById('paymentModal').style.display = 'none';
 }
+
 function processPayment() {
   const amount = parseFloat(document.getElementById('cashInput').value);
   const type = document.getElementById('paymentType').value;
@@ -212,7 +197,7 @@ function processPayment() {
 
   const change = amount - final;
 
-  fetch('http://localhost/SOFTENG/backend/api/index.php/payment', {
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/payment', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -223,47 +208,44 @@ function processPayment() {
       finalAmount: final
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.message === "Payment successful!") {
-      alert("✅ Payment successful! Change: ₱" + change.toFixed(2));
+    .then(res => res.json())
+    .then(data => {
+      if (data.message === "Payment successful!") {
+        alert("✅ Payment successful! Change: ₱" + change.toFixed(2));
 
-      // ✅ Clear cart
-      cart.length = 0;
-      renderCart();
-      closePaymentModal();
+        cart.length = 0;
+        renderCart();
+        closePaymentModal();
 
-      // ✅ Show popup receipt
-      showReceipt({
-        order_id: data.orderId,
-        discount_type: type,
-        discount: window.paymentData.discount,
-        discount_amount: (window.paymentData.total - final).toFixed(2),
-        total: window.paymentData.total.toFixed(2),
-        final: final.toFixed(2),
-        paid: amount.toFixed(2),
-        change: change.toFixed(2),
-        date: new Date().toLocaleString()
-      });
-
-      // ✅ Open the generated PDF from backend
-      fetch(`http://localhost/SOFTENG/backend/api/index.php/receipt?orderId=${data.orderId}`)
-        .then(res => res.json())
-        .then(pdf => {
-          if (pdf.url) {
-            window.open(pdf.url, '_blank'); // open in new tab
-          } else {
-            alert("⚠️ Receipt PDF not found.");
-          }
+        showReceipt({
+          order_id: data.orderId,
+          discount_type: type,
+          discount: window.paymentData.discount,
+          discount_amount: (window.paymentData.total - final).toFixed(2),
+          total: window.paymentData.total.toFixed(2),
+          final: final.toFixed(2),
+          paid: amount.toFixed(2),
+          change: change.toFixed(2),
+          date: new Date().toLocaleString()
         });
 
-    } else {
-      alert("⚠️ Payment failed.");
-    }
-  })
-  .catch(err => {
-    alert("❌ Payment failed: " + err);
-  });
+        fetch(`http://localhost/SOFTENG2/backend/api/index2.php/receipt?orderId=${data.orderId}`)
+          .then(res => res.json())
+          .then(pdf => {
+            if (pdf.url) {
+              window.open(pdf.url, '_blank');
+            } else {
+              alert("⚠️ Receipt PDF not found.");
+            }
+          });
+
+      } else {
+        alert("⚠️ Payment failed.");
+      }
+    })
+    .catch(err => {
+      alert("❌ Payment failed: " + err);
+    });
 }
 
 function showReceipt(receiptData) {
@@ -284,3 +266,12 @@ function showReceipt(receiptData) {
   win.document.close();
 }
 
+// ✅ Expose functions globally for onclick handlers
+window.loadCategory = loadCategory;
+window.showCategories = showCategories;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.addToCart = addToCart;
+window.checkout = checkout;
+window.closePaymentModal = closePaymentModal;
+window.processPayment = processPayment;
