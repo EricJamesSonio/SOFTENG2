@@ -10,7 +10,9 @@ error_reporting(E_ALL);
 
 require_once dirname(__DIR__, 2) . '/database/db2.php';
 
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Credentials: true");
+
 header("Content-Type: application/json");
 
 // Get and parse the request path
@@ -47,6 +49,14 @@ switch ($route) {
 
     case 'signup':
         require __DIR__ . '/routes/signup.php';
+        break;
+
+    case 'check_login':
+        require __DIR__ . '/routes/check_login.php';
+        break;
+
+    case 'logout':
+        require __DIR__ . '/routes/logout.php';
         break;
 
 

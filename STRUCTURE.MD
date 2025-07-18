@@ -5,14 +5,14 @@
 [backend]
     [api]
         [controllers] 
-            itemController.php
+            itemController.php -- uses from model folder like Class Item etc.
         [routes]
-            item.php
+            item.php etc. -- uses controllers folder
 
-        index.php
+        index.php -- Entry Point of Request
 
     [model]
-        item.php 
+        item.php --
 
 ---------------------------------------------------------------------------------------------------------
 [Backend Flow]
@@ -37,6 +37,17 @@ index.php       --> Main API checks the request ex. ("/items", "/suppliers")
 
 [routes]        -->  use controller to respond from the request 
                 --> index.php calls the files inside to respond
+
+-------------------------------------------------------------------------------------------------
+Flow of Website 
+
+1. Home page (Display etc.)
+2. Menu page
+3. Category items
+4. When adding to cart, Required Login or Sign up
+5. Checkout 
+6. Payment
+7. Receipt
 
 
 

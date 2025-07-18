@@ -26,3 +26,11 @@ Soft eng Project --> E commerce "Starbucks"
         [orders.php]        --> request = "/order"
         [suppliers.php]     --> request = "/supplier"
 
+
+---------------------------------------------------------------------------------------------------
+Improvements needed!
+
+need to improve the signing in! the phone number should be strictly ! 11 characters and based on the choosen country!
+and also the address!
+
+---------------------------------------

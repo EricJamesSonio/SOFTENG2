@@ -1,8 +1,9 @@
-// ─── Step 1: Load size options from backend ──────────────────────────
 let sizes = [];
 
 function loadSizes() {
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/sizes')
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/sizes', {
+    credentials: 'include'
+  })
     .then(res => res.json())
     .then(data => {
       sizes = data;
@@ -11,7 +12,27 @@ function loadSizes() {
     .catch(err => console.error('Could not load sizes:', err));
 }
 
+function checkLoginOnLoad() {
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+    credentials: 'include'
+  })
+    .then(res => {
+      if (res.status === 401) {
+        window.location.href = 'login2.html';
+        throw new Error("Not logged in");
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data.status) {
+        window.location.href = 'login2.html';
+      }
+    })
+    .catch(err => console.warn("Login check failed:", err));
+}
+
 loadSizes();
+checkLoginOnLoad(); // ✅ Force login check when page loads
 
 let currentCategory = '';
 let currentItem = null;
@@ -22,7 +43,9 @@ function loadCategory(categoryName) {
   document.getElementById('categorySelect').style.display = 'none';
   document.getElementById('backButton').style.display = 'block';
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/items')
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/items', {
+    credentials: 'include'
+  })
     .then(res => res.json())
     .then(data => {
       const filtered = data.filter(item => {
@@ -138,34 +161,62 @@ function checkout() {
     return alert("Cart is empty.");
   }
 
-  const payload = {
-    items: cart.map(i => ({
-      item_id: i.id,
-      size_id: i.sizeId,
-      quantity: i.quantity,
-      unit_price: i.unitPrice
-    })),
-    discount: 0
-  };
-
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+    credentials: 'include'
   })
-    .then(res => res.json())
+    .then(res => {
+      if (res.status === 401) {
+        // Not logged in based on status code
+        alert("Please login first.");
+        window.location.href = 'login2.html';
+        throw new Error("Not logged in");
+      }
+      return res.json();
+    })
     .then(data => {
-      if (data.message === "Checkout successful!") {
-        const total = payload.items.reduce((sum, it) => sum + it.unit_price * it.quantity, 0);
+      if (!data || !data.status) {
+        // Not logged in based on response data
+        alert("Please login first.");
+        window.location.href = 'login2.html';
+        throw new Error("Not logged in");
+      }
+
+      // Prepare payload for checkout
+      const payload = {
+        items: cart.map(i => ({
+          item_id: i.id,
+          size_id: i.sizeId,
+          quantity: i.quantity,
+          unit_price: i.unitPrice
+        })),
+        discount: 0
+      };
+
+      // Proceed to checkout
+      return fetch('http://localhost/SOFTENG2/backend/api/index2.php/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Checkout failed.");
+      return res.json();
+    })
+    .then(data => {
+      if (data && data.message === "Checkout successful!") {
+        const total = cart.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
         showPaymentModal(total);
       } else {
-        alert(data.message || "Something went wrong.");
+        alert(data?.message || "Something went wrong.");
       }
     })
     .catch(err => {
-      alert("Checkout failed: " + err);
+      console.warn("Checkout error:", err);
     });
 }
+
 
 function showPaymentModal(total) {
   const discount = total * 0.10;
@@ -200,6 +251,7 @@ function processPayment() {
   fetch('http://localhost/SOFTENG2/backend/api/index2.php/payment', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({
       type: type,
       amountPaid: amount,
@@ -229,7 +281,9 @@ function processPayment() {
           date: new Date().toLocaleString()
         });
 
-        fetch(`http://localhost/SOFTENG2/backend/api/index2.php/receipt?orderId=${data.orderId}`)
+        fetch(`http://localhost/SOFTENG2/backend/api/index2.php/receipt?orderId=${data.orderId}`, {
+          credentials: 'include'
+        })
           .then(res => res.json())
           .then(pdf => {
             if (pdf.url) {
@@ -266,7 +320,7 @@ function showReceipt(receiptData) {
   win.document.close();
 }
 
-// ✅ Expose functions globally for onclick handlers
+// ✅ Expose functions globally
 window.loadCategory = loadCategory;
 window.showCategories = showCategories;
 window.openModal = openModal;

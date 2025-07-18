@@ -1,5 +1,6 @@
 <?php
-ob_clean(); // remove any accidental output before JSON
+ob_clean();
+session_start(); // ✅ ADD THIS
 header('Content-Type: application/json');
 
 require_once dirname(__DIR__, 2) . '/model/auth.php';
@@ -18,6 +19,10 @@ function handleLogin($con) {
     $result = $auth->verifyCredentials($email, $password);
 
     if ($result) {
+        // ✅ Set session so login is remembered
+        $_SESSION['user_id'] = $result['account_id'];
+        $_SESSION['account_type'] = $result['account_type'];
+
         echo json_encode([
             "success" => true,
             "message" => "Login successful",

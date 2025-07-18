@@ -12,6 +12,7 @@
       <div class="button-panel">
         <button class="main-btn" onclick="showForm('login')">Login</button>
         <button class="main-btn" onclick="showForm('signup')">Sign Up</button>
+        <button class="main-btn" onclick="continueWithoutAccount()">Continue without an account</button>
       </div>
     </div>
 
@@ -78,6 +79,9 @@
         const result = text ? JSON.parse(text) : {};
 
         if (res.ok && result.success) {
+          // ✅ Store login flag
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.removeItem('isGuest'); // Remove guest flag if previously set
           window.location.href = 'menu2.html';
         } else {
           document.getElementById('errorMsg').textContent = result.message || 'Login failed';
@@ -135,6 +139,15 @@
         console.error(err);
         document.getElementById('errorMsg').textContent = 'Network or server error';
       }
+    }
+
+    function continueWithoutAccount() {
+      // ✅ Store guest flag
+      localStorage.setItem('isGuest', 'true');
+      localStorage.removeItem('isLoggedIn'); // Clear login flag if any
+
+      // ✅ Redirect to menu
+      window.location.href = 'menu2.html';
     }
   </script>
 </body>

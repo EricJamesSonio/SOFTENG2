@@ -4,10 +4,31 @@
   <meta charset="UTF-8">
   <title>Starbucks Menu</title>
   <link rel="stylesheet" href="style2.css">
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 300px;
+      border-radius: 8px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ⭐ Main Content (adjusted layout) -->
+  <!-- ⭐ Main Content -->
   <div class="main-content">
     <div class="container">
       <h1>Starbucks Menu</h1>
@@ -25,28 +46,22 @@
     </div>
   </div>
 
-<!-- 🆕 Popup Modal -->
-<div class="modal" id="itemModal">
-  <div class="modal-content">
-    <h3 id="modalItemName"></h3>
-
-    <!-- 1️⃣ SIZE DROPDOWN (filled by JS) -->
-    <label for="modalSize">Size:</label>
-    <select id="modalSize">
-      <option disabled selected>Loading sizes…</option>
-    </select>
-
-    <!-- 2️⃣ QUANTITY INPUT -->
-    <label for="modalQuantity">Quantity:</label>
-    <input type="number" id="modalQuantity" value="1" min="1">
-
-    <button onclick="addToCart()">Add to Cart</button>
-    <button class="close" onclick="closeModal()">Cancel</button>
+  <!-- 🆕 Popup Modal -->
+  <div class="modal" id="itemModal">
+    <div class="modal-content">
+      <h3 id="modalItemName"></h3>
+      <label for="modalSize">Size:</label>
+      <select id="modalSize">
+        <option disabled selected>Loading sizes…</option>
+      </select>
+      <label for="modalQuantity">Quantity:</label>
+      <input type="number" id="modalQuantity" value="1" min="1">
+      <button onclick="addToCart()">Add to Cart</button>
+      <button class="close" onclick="closeModal()">Cancel</button>
+    </div>
   </div>
-</div>
 
-
-  <!-- 🛒 Fixed Cart Sidebar -->
+  <!-- 🛒 Cart Sidebar -->
   <div class="cart-sidebar" id="cartSidebar">
     <h3>🛒 Your Cart</h3>
     <div id="cartItems"></div>
@@ -57,30 +72,140 @@
     </div>
   </div>
 
-    <!-- 💰 Payment Modal -->
-<div class="modal" id="paymentModal">
-  <div class="modal-content">
-    <h3>Payment</h3>
-
-    <label>Payment Type:</label><br>
-    <select id="paymentType">
-      <option value="cash">Cash</option>
-      <option value="gcash">GCash</option>
-    </select><br><br>
-
-    <p>Total: ₱<span id="paymentTotal"></span></p>
-    <p>Discount (10%): ₱<span id="paymentDiscount"></span></p>
-    <p>Final Amount: ₱<span id="finalAmount"></span></p>
-
-    <label for="cashInput">Enter Amount:</label>
-    <input type="number" id="cashInput" min="0"><br><br>
-
-    <button onclick="processPayment()">Pay</button>
-    <button class="close" onclick="closePaymentModal()">Cancel</button>
+  <!-- 💰 Payment Modal -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-content">
+      <h3>Payment</h3>
+      <label>Payment Type:</label><br>
+      <select id="paymentType">
+        <option value="cash">Cash</option>
+        <option value="gcash">GCash</option>
+      </select><br><br>
+      <p>Total: ₱<span id="paymentTotal"></span></p>
+      <p>Discount (10%): ₱<span id="paymentDiscount"></span></p>
+      <p>Final Amount: ₱<span id="finalAmount"></span></p>
+      <label for="cashInput">Enter Amount:</label>
+      <input type="number" id="cashInput" min="0"><br><br>
+      <button onclick="processPayment()">Pay</button>
+      <button class="close" onclick="closePaymentModal()">Cancel</button>
+    </div>
   </div>
-</div>
 
+  <!-- 🔐 Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h3>Login to continue</h3>
+      <input type="text" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginPass" placeholder="Password" required>
+      <div id="loginError" style="color: red; margin: 8px 0;"></div>
+      <button onclick="loginFromModal()">Login</button>
+      <button onclick="closeLoginModal()">Cancel</button>
+    </div>
+  </div>
 
+  <!-- 🔓 Logout Button -->
+  <div style="position: fixed; top: 10px; right: 10px;">
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <!-- 🔧 Shared Logic -->
+  <script>
+    const BASE_URL = 'http://localhost/SOFTENG2/backend/api/index2.php';
+
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    async function loginFromModal() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value.trim();
+
+      try {
+        const res = await fetch(`${BASE_URL}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+
+        const text = await res.text();
+        const result = text ? JSON.parse(text) : {};
+
+        if (res.ok && result.success) {
+          closeLoginModal();
+          alert("✅ Login successful!");
+          location.reload(); // refresh to update UI if needed
+        } else {
+          document.getElementById('loginError').textContent = result.message || 'Login failed';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loginError').textContent = 'Network error';
+      }
+    }
+
+    function openPaymentModal() {
+      document.getElementById('paymentModal').style.display = 'flex';
+      document.getElementById('paymentTotal').textContent = document.getElementById('cartTotal').textContent;
+      document.getElementById('paymentDiscount').textContent = document.getElementById('cartDiscount').textContent;
+      const total = parseFloat(document.getElementById('cartTotal').textContent) || 0;
+      const discount = parseFloat(document.getElementById('cartDiscount').textContent) || 0;
+      document.getElementById('finalAmount').textContent = (total - discount).toFixed(2);
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function processPayment() {
+      alert("Payment processed!");
+      closePaymentModal();
+    }
+
+    function logout() {
+      fetch(`${BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || "Logged out.");
+          window.location.href = 'login2.html';
+        })
+        .catch(() => {
+          alert("Logout failed.");
+        });
+    }
+
+    // ✅ REPLACED checkout logic HERE
+  function checkout() {
+  fetch(`${BASE_URL}/check_login`, {
+    credentials: 'include'
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status) {
+        openPaymentModal();
+      } else {
+        // Not logged in
+        alert("🔒 Please log in to continue.");
+        window.location.href = 'login2.html';
+      }
+    })
+    .catch(() => {
+      // Also handle any unexpected fetch error
+      alert("🔒 Login check failed. Redirecting to login page...");
+      window.location.href = 'login2.html';
+    });
+}
+
+  </script>
+
+  <!-- 🌐 Main Logic File -->
   <script src="menu2.js"></script>
 </body>
 </html>
