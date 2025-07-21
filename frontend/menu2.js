@@ -13,6 +13,8 @@ function loadSizes() {
 }
 
 function checkLoginOnLoad() {
+  if (localStorage.getItem("isGuest")) return; // ✅ Skip check if guest
+
   fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
     credentials: 'include'
   })
@@ -31,8 +33,12 @@ function checkLoginOnLoad() {
     .catch(err => console.warn("Login check failed:", err));
 }
 
+
 loadSizes();
-checkLoginOnLoad(); // ✅ Force login check when page loads
+if (!localStorage.getItem("isGuest")) {
+  checkLoginOnLoad(); // ✅ Only run check if not guest
+}
+
 
 let currentCategory = '';
 let currentItem = null;
@@ -161,61 +167,51 @@ function checkout() {
     return alert("Cart is empty.");
   }
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
-    credentials: 'include'
-  })
-    .then(res => {
-      if (res.status === 401) {
-        // Not logged in based on status code
-        alert("Please login first.");
-        window.location.href = 'login2.html';
-        throw new Error("Not logged in");
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (!data || !data.status) {
-        // Not logged in based on response data
-        alert("Please login first.");
-        window.location.href = 'login2.html';
-        throw new Error("Not logged in");
-      }
+  const isGuest = localStorage.getItem("isGuest") === "true";
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-      // Prepare payload for checkout
-      const payload = {
-        items: cart.map(i => ({
-          item_id: i.id,
-          size_id: i.sizeId,
-          quantity: i.quantity,
-          unit_price: i.unitPrice
-        })),
-        discount: 0
-      };
+  if (isGuest) {
+    // 👇 Redirect to login2.html for guest upgrade options
+    alert("🔐 To complete your checkout, please choose an option:");
+    window.location.href = "login2.html";
+    return;
+  }
 
-      // Proceed to checkout
-      return fetch('http://localhost/SOFTENG2/backend/api/index2.php/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
+  if (isLoggedIn) {
+    // 🔐 Check session with backend
+    fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+      credentials: 'include'
     })
-    .then(res => {
-      if (!res.ok) throw new Error("Checkout failed.");
-      return res.json();
-    })
-    .then(data => {
-      if (data && data.message === "Checkout successful!") {
+      .then(res => {
+        if (res.status === 401) {
+          alert("Session expired. Please log in again.");
+          window.location.href = 'login2.html';
+          throw new Error("Unauthorized");
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (!data.status) {
+          alert("Login required.");
+          window.location.href = 'login2.html';
+          throw new Error("Not logged in");
+        }
+
+        // ✅ Logged-in user: proceed
         const total = cart.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
         showPaymentModal(total);
-      } else {
-        alert(data?.message || "Something went wrong.");
-      }
-    })
-    .catch(err => {
-      console.warn("Checkout error:", err);
-    });
+      })
+      .catch(err => {
+        console.warn("Checkout error:", err);
+      });
+  } else {
+    // Not guest or logged in? Redirect to login2.html
+    alert("Please log in or continue as guest.");
+    window.location.href = 'login2.html';
+  }
 }
+
+
 
 
 function showPaymentModal(total) {

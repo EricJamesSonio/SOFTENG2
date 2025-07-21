@@ -59,6 +59,10 @@ switch ($route) {
         require __DIR__ . '/routes/logout.php';
         break;
 
+    case '/history':
+        require_once __DIR__ . '/routes/history.php';
+        break;
+
 
 
     default:

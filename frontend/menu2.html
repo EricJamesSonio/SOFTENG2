@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Starbucks Menu</title>
-  <link rel="stylesheet" href="style2.css">
+  <link rel="stylesheet" href="css/menu2.css">
   <style>
     .modal {
       display: none;
@@ -24,6 +24,24 @@
       border-radius: 8px;
       text-align: center;
     }
+
+    .cart-sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 300px;
+      background-color: #fff;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      transform: translateX(100%);
+    }
+
+    .cart-sidebar.visible {
+      transform: translateX(0);
+    }
   </style>
 </head>
 <body>
@@ -32,6 +50,12 @@
   <div class="main-content">
     <div class="container">
       <h1>Starbucks Menu</h1>
+
+      <!-- 🆕 History and Cart Buttons -->
+      <div style="margin-bottom: 15px;">
+        <button onclick="location.href='history.html'">🧾 View Order History</button>
+        <button onclick="toggleCart()">🛒 Toggle Cart</button>
+      </div>
 
       <div class="category-select" id="categorySelect">
         <button onclick="loadCategory('Drink')">☕ Drink</button>
@@ -108,9 +132,20 @@
     <button onclick="logout()">🚪 Logout</button>
   </div>
 
-  <!-- 🔧 Shared Logic -->
   <script>
     const BASE_URL = 'http://localhost/SOFTENG2/backend/api/index2.php';
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const isGuest = localStorage.getItem("isGuest") === "true";
+
+      if (!isLoggedIn && !isGuest) {
+        setTimeout(() => {
+          alert("Please log in or continue as guest.");
+          window.location.href = "login2.html";
+        }, 100);
+      }
+    });
 
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
@@ -136,9 +171,11 @@
         const result = text ? JSON.parse(text) : {};
 
         if (res.ok && result.success) {
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.removeItem("isGuest");
           closeLoginModal();
           alert("✅ Login successful!");
-          location.reload(); // refresh to update UI if needed
+          location.reload();
         } else {
           document.getElementById('loginError').textContent = result.message || 'Login failed';
         }
@@ -158,15 +195,16 @@
     }
 
     function closePaymentModal() {
-      document.getElementById('paymentModal').style.display = 'none';
+      document.getElementById('paymentModal').style.display = 'none'; 
     }
 
     function processPayment() {
-      alert("Payment processed!");
+      alert("💳 Payment processed!");
       closePaymentModal();
     }
 
     function logout() {
+      localStorage.clear();
       fetch(`${BASE_URL}/logout`, {
         method: 'POST',
         credentials: 'include'
@@ -181,31 +219,52 @@
         });
     }
 
-    // ✅ REPLACED checkout logic HERE
-  function checkout() {
-  fetch(`${BASE_URL}/check_login`, {
-    credentials: 'include'
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status) {
+    function checkout() {
+      const isGuest = localStorage.getItem("isGuest") === "true";
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+      if (isGuest) {
         openPaymentModal();
+        return;
+      }
+
+      if (isLoggedIn) {
+        fetch(`${BASE_URL}/check_login`, {
+          credentials: 'include'
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status) {
+              openPaymentModal();
+            } else {
+              alert("🔒 Please log in to continue.");
+              window.location.href = 'login2.html';
+            }
+          })
+          .catch(() => {
+            alert("Login check failed. Redirecting to login...");
+            window.location.href = 'login2.html';
+          });
       } else {
-        // Not logged in
-        alert("🔒 Please log in to continue.");
+        alert("Please log in or continue as guest.");
         window.location.href = 'login2.html';
       }
-    })
-    .catch(() => {
-      // Also handle any unexpected fetch error
-      alert("🔒 Login check failed. Redirecting to login page...");
-      window.location.href = 'login2.html';
-    });
-}
+    }
 
+    // 🆕 Toggle Cart Sidebar
+    function toggleCart() {
+      const cart = document.getElementById("cartSidebar");
+      cart.classList.toggle("visible");
+    }
   </script>
 
   <!-- 🌐 Main Logic File -->
-  <script src="menu2.js"></script>
+  <script src="menu/cart.js"></script>
+  <script src="menu/category.js"></script>
+  <script src="menu/modal.js"></script>
+  <script src="menu/payment.js"></script>
+  <script src="menu/receipt.js"></script>
+  <script src="menu/init.js"></script>
+
 </body>
 </html>
