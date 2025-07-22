@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
-require_once dirname(__DIR__, 2) . '/database/db2.php';
+require_once dirname(__DIR__, 3) . '/database/db2.php';
+
 session_start();
 
 // ✅ 1. Check for login
@@ -15,7 +16,7 @@ $userId = $_SESSION['user_id'];
 // ✅ 2. Get user order history
 $sql = "
     SELECT r.order_id, r.issued_at AS date, r.final_amount AS total
-    FROM receipts r
+    FROM receipt r
     JOIN userorder u ON r.order_id = u.id
     WHERE u.user_id = ?
     ORDER BY r.issued_at DESC
@@ -40,7 +41,7 @@ while ($row = $result->fetch_assoc()) {
     // ✅ 3. Fetch items for each order
     $itemSql = "
         SELECT i.name, oi.quantity, oi.unit_price
-        FROM orderitem oi
+        FROM order_item oi
         JOIN starbucksitem i ON oi.item_id = i.id
         WHERE oi.order_id = ?
     ";

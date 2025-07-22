@@ -1,5 +1,7 @@
 <?php 
 require_once dirname(__DIR__, 2) . '/model/Payment.php';
+require_once dirname(__DIR__, 3) . '/database/db2.php';
+
 header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

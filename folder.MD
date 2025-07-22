@@ -75,7 +75,7 @@ SOFTENG2/
 |   |   ├── menu2.css # Category display and items page
 |   |   ├── login2.css # Styling for login2.html
 |   |
-|   |── menu/
+|   |── menu/  -- use in menu2.html
 |   |   ├── cart.js       
 |   |   ├── category.js
 |   |   ├── init.js

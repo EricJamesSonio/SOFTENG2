@@ -1,9 +1,13 @@
 <?php
 header("Content-Type: application/json");
 
-require_once dirname(__DIR__, 2) . '/../database/db2.php';
+require_once dirname(__DIR__, 3) . '/database/db2.php';
+
+
+
+
 //require_once dirname(__DIR__, 2) . '/tcpdf/tcpdf.php'; // Adjust path as needed (currently unused)
-echo json_encode($receiptData);
+// echo json_encode($receiptData);
 
 $orderId = $_GET['orderId'] ?? null;
 if (!$orderId) {

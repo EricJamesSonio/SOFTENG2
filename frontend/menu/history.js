@@ -5,12 +5,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("http://localhost/SOFTENG2/backend/api/routes/history.php");
     const historyData = await response.json();
 
-    if (!Array.isArray(historyData) || historyData.length === 0) {
-      container.innerHTML = "<p>No order history available.</p>";
-      return;
-    }
+    if (!historyData.status || !Array.isArray(historyData.history) || historyData.history.length === 0) {
+  container.innerHTML = "<p>No order history available.</p>";
+  return;
+}
 
-    historyData.forEach((receipt) => {
+historyData.history.forEach((receipt) => 
+ {
       const div = document.createElement("div");
       div.classList.add("receipt-box");
       div.innerHTML = `

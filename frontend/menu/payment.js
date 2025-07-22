@@ -88,12 +88,14 @@ function processPayment() {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({
-      type: type,
-      amountPaid: amount,
-      total: window.paymentData.total,
-      discount: window.paymentData.discount,
-      finalAmount: final
-    })
+  orderId: window.orderId,  // ✅ attach order ID
+  type: type,
+  amountPaid: amount,
+  total: window.paymentData.total,
+  discount: window.paymentData.discount,
+  finalAmount: final
+})
+
   })
     .then(res => res.json())
     .then(data => {
