@@ -2,6 +2,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+ini_set('html_errors', 0);
+header('Content-Type: application/json');
 // … the rest of your code …
 
 //ini_set('display_errors', 0); // or 1 if you want to debug
@@ -59,8 +61,12 @@ switch ($route) {
         require __DIR__ . '/routes/logout.php';
         break;
 
-    case '/history':
+    case 'history':
         require_once __DIR__ . '/routes/history.php';
+        break;
+
+    case 'cart':
+        require_once __DIR__ . '/routes/cart.php';
         break;
 
 

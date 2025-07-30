@@ -1,0 +1,181 @@
+<!-- cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="cart.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f8f8f8;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      background-color: #333;
+      padding: 10px 20px;
+    }
+    header button {
+      background-color: #fff;
+      color: #333;
+      border: none;
+      padding: 10px;
+      margin: 0 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    main {
+      padding: 20px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    #cartItems {
+      background-color: #fff;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 16px;
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-weight: bold;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 300px;
+    }
+    .modal-content label {
+      display: block;
+      margin-top: 10px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    #receiptContainer {
+      display: none;
+      margin: 30px auto;
+      max-width: 600px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #receiptContent h2 {
+      text-align: center;
+    }
+    #receiptContent table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    #receiptContent table, th, td {
+      border: 1px solid #ddd;
+    }
+    #receiptContent th, #receiptContent td {
+      padding: 8px;
+      text-align: left;
+    }
+    #receiptContent p {
+      margin: 5px 0;
+    }
+    #receiptContent button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button onclick="window.location.href='../menu/menu.html'">🍔 Back to Menu</button>
+    <button onclick="window.location.href='../history/history.html'">📜 Order History</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </header>
+
+  <main>
+    <h2>🛒 Your Cart</h2>
+    <div id="cartItems"></div>
+    <p>Total: ₱<span id="cartTotal">0.00</span></p>
+    <p>Discount: ₱<span id="cartDiscount">0.00</span></p>
+    <button onclick="checkout()">Checkout</button>
+  </main>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3>🧾 Checkout</h3>
+      <p>Total: ₱<span id="paymentTotal">0.00</span></p>
+      <p>Discount: ₱<span id="paymentDiscount">0.00</span></p>
+      <p>Final: ₱<span id="finalAmount">0.00</span></p>
+      <label>Cash:
+        <input type="number" id="cashInput" placeholder="Enter cash" />
+      </label>
+      <label>Payment Type:
+        <select id="paymentType">
+          <option value="cash">Cash</option>
+          <option value="gcash">GCash</option>
+        </select>
+      </label>
+      <div class="modal-actions">
+        <button onclick="processPayment()">Pay</button>
+        <button onclick="closePaymentModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Container -->
+  <!-- Receipt Container -->
+<div id="receiptContainer">
+  <div id="receiptBox"></div>
+</div>
+
+  <script type="module" src="./cartMain.js"></script>
+  <script>
+    // Optional fallback logout if not handled in module
+    function logout() {
+      fetch('http://localhost/SOFTENG2/backend/api/index2.php/logout', {
+        method: 'POST',
+        credentials: 'include'
+      }).then(() => {
+        alert("Logged out successfully!");
+        window.location.href = '../login/login.html';
+      }).catch(() => {
+        alert("Logout failed.");
+      });
+    }
+
+    function closePaymentModal() {
+      document.getElementById("paymentModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

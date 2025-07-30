@@ -25,3 +25,54 @@ Saved in Order Tab of Customer
 Current Flow
 
 Login -- Menu page -- Add to cart -- Checkout -- Payment -- Receipt
+
+---------------------------------------------------------------------
+
+Plan A
+
+Default site = "/"
+
+Product display
+Logo
+Home, Menu, About us, Cart, Profile [sign up/login/continue without account]
+
+[Add to cart]
+
+Email
+Password
+- save account, Forgot password
+
+sign in button
+continue with google
+continue with facebook
+
+[Categories]
+
+[search buttonn]
+
+Drinks
+- hot coffee
+- cold coffee
+- hot tea
+
+Food
+-break fast
+-bakery
+-treats
+
+------------ Needed Buttons -------------
+
+1. Login & sign up & go without account
+[sign in]
+--> email
+--> password 
+--> Confirm sign in
+
+ Sign up
+[Options]
+--> User name
+--> 
+
+
+2. 
+

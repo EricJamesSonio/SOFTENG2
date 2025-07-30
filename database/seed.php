@@ -17,6 +17,8 @@ require_once(__DIR__ . '/model/user_order.php');
 require_once(__DIR__ . '/model/size.php');      // also creates item_size
 require_once(__DIR__ . '/model/orderitems.php');
 require_once(__DIR__ . '/model/receipts.php');
+require_once(__DIR__ . '/model/cart_items.php');
+require_once(__DIR__ . '/model/discount.php');
 
 // --- DATA SEEDING ---
 // 1) core lookups & static data
@@ -30,6 +32,7 @@ require_once(__DIR__ . '/scripts/data/admins.php');
 require_once(__DIR__ . '/scripts/data/contacts.php');
 require_once(__DIR__ . '/scripts/data/auth.php');
 require_once(__DIR__ . '/scripts/data/address.php');
+require_once(__DIR__ . '/scripts/data/discounts.php');
 
 // 2) seed sizes lookup  
 require_once(__DIR__ . '/scripts/data/size.php');

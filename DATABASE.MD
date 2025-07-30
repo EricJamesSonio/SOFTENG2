@@ -15,6 +15,7 @@
     userorder               --> Individual order itself contains price & quantity
     order_item              --> contains the userorders to combine all and can get the total price etc.
     receipt                 --> Contains receipt of the order (payment, change etc.)
+    discount                --> contains pwd, senior, store discounts apply to the total price!
 
 StarbucksItem -->
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,6 +146,16 @@ Receipts -->
         change_amount DECIMAL(10,2) GENERATED ALWAYS AS (payment_amount - final_amount) STORED,
         issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (order_id) REFERENCES userorder(id) ON DELETE CASCADE
+
+Discount 
+    CREATE TABLE discount (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL, -- 'Senior', 'PWD', etc.
+        description TEXT,
+        discount_percentage DECIMAL(5,2) NOT NULL CHECK (discount_percentage >= 0.00 AND discount_percentage <= 100.00),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
 
 
 [scripts]
