@@ -9,13 +9,17 @@
 </head>
 <body>
   <header id="top">
+  <div style="display: flex; align-items: center;">
     <img src="../assets/logo.png" alt="Logo">
-    <ul id="nav">
-      <li><a href="../menu/menu.html">Menu</a></li>
-      <li><a href="../history/history.html">History</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
-    </ul>
-  </header>
+    <button class="back-btn" onclick="window.location.href='../menu/menu.html'">← Back</button>
+  </div>
+  <ul id="nav">
+    <li><a href="../menu/menu.html">Menu</a></li>
+    <li><a href="../history/history.html">History</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</header>
+
 
   <main>
     <section id="cartSection">

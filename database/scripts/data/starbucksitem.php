@@ -24,7 +24,9 @@ insertData($con, 'starbucksitem',
     ['Egg Sandwich', 130.00, 8, $sandwichId, $eggId, 'Classic breakfast sandwich with egg and cheese', 'egg.jpg'],
     ['Bacon & Cheese Sandwich', 145.00, 5, $sandwichId, $baconId, 'Savory sandwich with crispy bacon and melted cheese', 'bacon.jpg'],
     ['Cheddar Melt Sandwich', 135.00, 7, $sandwichId, $cheddarId, 'Warm sandwich with rich cheddar cheese filling', 'cheddar.jpg'],
-    ['Ice Starbucks Purple Cream', 120.00, 12, $drinkId, $fruityId, 'Ice cream Supreme Taste!', 'cream.jpg']
+    ['Ice Starbucks Purple Cream', 120.00, 12, $drinkId, $fruityId, 'Ice cream Supreme Taste!', 'cream.jpg'],
+    ['Double-Smoked Bacon, Cheddar & Egg Sandwich', 395.00, 6, $sandwichId, $baconId, 'A hearty sandwich with double-smoked bacon, cheddar, and egg', 'BaconGoudaEggSandwich.jpg'],
+    ['Turkey Bacon, Cheddar & Egg White Sandwich', 382.00, 6, $sandwichId, $baconId, 'A lighter option with turkey bacon, cheddar, and egg white', 'DoubleSmokedBaconEggSandwich.jpg']
 ]);
 
 ?>

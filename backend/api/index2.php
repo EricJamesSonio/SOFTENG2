@@ -69,6 +69,10 @@ switch ($route) {
         require_once __DIR__ . '/routes/cart.php';
         break;
 
+    case 'topselling':
+        require_once __DIR__ . '/routes/topselling.php';
+        break;
+
 
 
     default:

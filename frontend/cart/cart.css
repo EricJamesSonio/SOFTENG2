@@ -160,3 +160,20 @@ main {
   padding: 0.5rem;
   text-align: left;
 }
+.back-btn {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background-color: white;
+  color: var(--main-color-darkgreen);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: var(--main-color-lightgreen);
+  color: white;
+}
