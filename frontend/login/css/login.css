@@ -1,63 +1,97 @@
-/* login.css */
+/* login.css - redesigned to match the modern green UI */
 
-body {
+:root {
+  --main-color-green: #00bb68;
+  --main-color-darkgreen: #00361f;
+  --main-color-lightgreen: #006c3d;
+  --unique-color-yellow: #b9d401;
+}
+
+*, html, body {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
 }
 
+body {
+  background-color: #00170e;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Centered login card */
 .container {
+  background-color: var(--main-color-darkgreen);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(0, 255, 157, 0.1);
+  width: 90%;
   max-width: 400px;
-  margin: 80px auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: #006341; /* Starbucks green */
 }
 
+/* Header */
+h2 {
+  color: var(--main-color-green);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+
+/* Input Fields */
 input[type="text"],
 input[type="email"],
-input[type="password"],
-button {
+input[type="password"] {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
-  box-sizing: border-box;
+  border: none;
+  border-radius: 10px;
+  background-color: #00361f;
+  color: white;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease, border 0.3s ease;
 }
 
 input:focus {
-  border-color: #006341;
   outline: none;
+  background-color: #004b2b;
+  border: 2px solid var(--main-color-green);
 }
 
+/* Submit Button */
 button {
-  background-color: #006341;
-  color: white;
+  width: 100%;
+  padding: 14px;
+  background-color: var(--main-color-green);
   border: none;
+  border-radius: 100px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background-color: #004b2b;
+  background-color: var(--main-color-lightgreen);
+  transform: translateY(-2px);
 }
 
+/* Error Message */
 .error-msg {
-  color: #cc0000;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 14px;
+  margin-top: 15px;
+  color: #ff4d4d;
+  background-color: rgba(255, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
   display: none;
 }
