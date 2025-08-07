@@ -3,7 +3,7 @@
 let sizes = [];
 
 export function loadSizes() {
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/sizes', {
+  fetch('../../backend/api/index2.php/sizes', {
     credentials: 'include'
   })
     .then(res => res.json())
@@ -17,7 +17,7 @@ export function loadSizes() {
 export function checkLoginOnLoad() {
   if (localStorage.getItem("isGuest")) return;
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+  fetch('../backend/api/index2.php/check_login', {
     credentials: 'include'
   })
     .then(res => {

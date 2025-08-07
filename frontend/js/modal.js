@@ -44,7 +44,7 @@ const payload = {
   guest_token: ensureGuestToken() // ✅ attach this
 };
   try {
-    const res = await fetch('http://localhost/SOFTENG2/backend/api/index2.php/cart', {
+    const res = await fetch('../../backend/api/index2.php/cart', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

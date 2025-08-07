@@ -1,7 +1,7 @@
 // frontend/js/api.js
 import { openModal } from './modal.js';
 
-const BASE_IMG_PATH = '/SOFTENG2/frontend/menu/images/';
+const BASE_IMG_PATH = '../../frontend/menu/images/';
 
 const IMAGE_MAP = {
   "Iced Americano":                 BASE_IMG_PATH + "americano.jpg",
@@ -28,7 +28,7 @@ export function loadTopSelling(categoryName) {
   document.getElementById('categorySelect')?.style.setProperty('display','none');
   document.getElementById('backButton')?.style.setProperty('display','block');
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/topselling', {
+  fetch('../../backend/api/index2.php/topselling', {
     credentials: 'include'
   })
     .then(r => r.json())
@@ -69,7 +69,7 @@ export function loadCategory(categoryName) {
   document.getElementById('categorySelect').style.display = 'none';
   document.getElementById('backButton').style.display = 'block';
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/items', {
+  fetch('../../backend/api/index2.php/items', {
     credentials: 'include'
   })
     .then(res => res.json())

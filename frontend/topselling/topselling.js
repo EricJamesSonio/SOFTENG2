@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const response = await fetch("http://localhost/SOFTENG2/backend/api/index2.php/topselling");
+    const response = await fetch("../../backend/api/index2.php/topselling");
     const result = await response.json();
 
     if (!result.status || result.data.length === 0) {

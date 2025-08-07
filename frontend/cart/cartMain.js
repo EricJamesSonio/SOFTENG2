@@ -21,7 +21,7 @@ window.processPayment    = processPayment;
 window.closePaymentModal = closePaymentModal;
 window.logout            = () => {
   localStorage.clear();
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/logout', {
+  fetch('../../backend/api/index2.php/logout', {
     credentials: 'include'
   }).then(() => window.location.href = '../../design/home/index.html');
 };

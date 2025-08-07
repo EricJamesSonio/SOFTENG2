@@ -1,6 +1,6 @@
 // cart.js
 export async function fetchCartItems() {
-  const res = await fetch('http://localhost/SOFTENG2/backend/api/index2.php/cart', {
+  const res = await fetch('../../backend/api/index2.php/cart', {
     credentials: 'include'
   });
   if (!res.ok) throw new Error("Failed to load cart");

@@ -2,7 +2,7 @@ import { renderCartFromServer, fetchCartItems } from './cart.js';
 
 export function checkout() {
   // Step 1: Verify session
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+  fetch('../../backend/api/index2.php/check_login', {
     credentials: 'include'
   })
     .then(r => {
@@ -61,7 +61,7 @@ export function processPayment() {
 
   const change = amt - final;
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/payment', {
+  fetch('../../backend/api/index2.php/payment', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

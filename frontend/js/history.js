@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("history-container");
 
   try {
-    const response = await fetch("http://localhost/SOFTENG2/backend/api/routes/history.php");
+    const response = await fetch("../../backend/api/routes/history.php");
     const historyData = await response.json();
 
     if (!historyData.status || !Array.isArray(historyData.history) || historyData.history.length === 0) {
